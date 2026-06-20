@@ -44,7 +44,7 @@ Trong thư mục ShopQuanAo_SQL_vX, bạn vui lòng chạy lần lượt các fi
 - spring.datasource.username=sa
 - spring.datasource.password=123
 
-3. Chọn Run (hoặc nhấn Shift + F10) để khởi chạy dự án. Mở trình duyệt và truy cập theo đường dẫn: http://localhost:8080.
+3. Chọn Run (hoặc nhấn Shift + F10) để khởi chạy dự án. Mở trình duyệt và truy cập theo đường dẫn: http://localhost:8081 (hoặc số cổng tương ứng mà bạn đã đổi trong code chỗ file "src/main/resources/application.properties").
 
 \-----------------------------------------------------------------------------------------------------------------------------------
 
