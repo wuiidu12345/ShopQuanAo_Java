@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/_LayoutAdmin}">
+<head>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="d-flex flex-column gap-4">
+        <div th:if="${successMessage != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-1"></i> <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <section id="orders">
+            <h4 class="mb-3 fw-bold">Danh sách Đơn hàng</h4>
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr class="text-muted text-uppercase" style="font-size: 0.85rem;">
+                                <th class="ps-4">Mã đơn</th>
+                                <th>Khách hàng</th>
+                                <th>Ngày đặt</th>
+                                <th>Thành tiền</th>
+                                <th>Thanh toán</th>
+                                <th style="width: 200px;">Trạng thái</th>
+                                <th class="text-end pe-4">Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${orders}">
+                                <td class="ps-4 fw-bold text-primary" th:text="'#' + ${item.maDonHang}"></td>
+                                <td class="fw-semibold text-dark" th:text="${item.tenKhachHang}"></td>
+                                <td th:text="${#temporals.format(item.ngayDat, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="text-danger fw-bold"
+                                    th:text="${#numbers.formatDecimal(item.tongTien, 3, 'POINT', 0, 'POINT')} + 'đ'"></td>
+                                <td>
+                                    <select class="form-select form-select-sm fw-semibold" name="daThanhToan"
+                                            th:form="'form-' + ${item.maDonHang}" style="font-size: 0.9rem;">
+                                        <option value="1" th:selected="${item.daThanhToan}">Đã thanh toán</option>
+                                        <option value="0" th:selected="${!item.daThanhToan}">Chưa thanh toán</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <form th:id="'form-' + ${item.maDonHang}" th:action="@{/admin/orders/update-status}"
+                                          method="post" class="d-flex align-items-center">
+                                        <input type="hidden" name="maDonHang" th:value="${item.maDonHang}"/>
+                                        <select class="form-select form-select-sm fw-semibold" name="status"
+                                                style="font-size: 0.9rem;">
+                                            <option value="Chờ xác nhận"
+                                                    th:selected="${item.trangThai == 'Chờ xác nhận'}">Chờ xác nhận
+                                            </option>
+                                            <option value="Đang giao" th:selected="${item.trangThai == 'Đang giao'}">
+                                                Đang giao
+                                            </option>
+                                            <option value="Hoàn tất" th:selected="${item.trangThai == 'Hoàn tất'}">Hoàn
+                                                tất
+                                            </option>
+                                            <option value="Hủy" th:selected="${item.trangThai == 'Hủy'}">Hủy</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button th:attr="form='form-' + ${item.maDonHang}" type="submit"
+                                            class="btn btn-sm btn-primary px-3">
+                                        <i class="fas fa-save me-1"></i> Lưu
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${orders == null or orders.isEmpty()}">
+                                <td colspan="7" class="text-center py-5 text-muted">Chưa có đơn hàng nào tồn tại trong
+                                    hệ thống.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/_LayoutAdmin}">
+<head>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Thêm sản phẩm mới</h4>
+            <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded">
+            <div class="card-body p-4">
+
+                <form th:action="@{/admin/dashboard/create}" method="post" enctype="multipart/form-data"
+                      id="createProductForm">
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="tenSanPham" placeholder="Nhập tên sản phẩm..."
+                                   required/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                            <select class="form-select" name="maDanhMuc" id="ddlCategory" required>
+                                <option th:each="cat : ${categories}" th:value="${cat.get('MaDanhMuc')}"
+                                        th:text="${cat.get('TenDanhMuc')}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mô tả sản phẩm</label>
+                            <textarea class="form-control" name="moTa" rows="4"
+                                      placeholder="Nhập mô tả sản phẩm..."></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Hình ảnh đại diện <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" class="form-control" name="imageFile" accept="image/*" required/>
+                        </div>
+                    </div>
+
+                    <hr class="my-4"/>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label fw-bold mb-3"><i class="fas fa-boxes me-1"></i> Cấu hình kích thước
+                                và số lượng tồn kho</label>
+
+                            <div class="table-responsive border rounded shadow-sm bg-white">
+                                <table class="table align-middle mb-0" id="sizeTable">
+                                    <thead class="bg-light">
+                                    <tr class="small text-muted text-uppercase fw-bold">
+                                        <th style="width: 80px;" class="text-center">Chọn</th>
+                                        <th style="width: 120px;">Kích thước (Size)</th>
+                                        <th>Giá bán mặc định (đ)</th>
+                                        <th style="width: 180px;" class="text-center">Số lượng nhập</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="size-row-text">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="S"/></td>
+                                        <td class="fw-bold text-dark">Size S</td>
+                                        <td><input type="number" class="form-control text-end" name="price_S" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_S" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-text">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="M"/></td>
+                                        <td class="fw-bold text-dark">Size M</td>
+                                        <td><input type="number" class="form-control text-end" name="price_M" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_M" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-text">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="L"/></td>
+                                        <td class="fw-bold text-dark">Size L</td>
+                                        <td><input type="number" class="form-control text-end" name="price_L" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_L" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-text">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="XL"/></td>
+                                        <td class="fw-bold text-dark">Size XL</td>
+                                        <td><input type="number" class="form-control text-end" name="price_XL" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_XL" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="38"/></td>
+                                        <td class="fw-bold text-dark">Size 38</td>
+                                        <td><input type="number" class="form-control text-end" name="price_38" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_38" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="39"/></td>
+                                        <td class="fw-bold text-dark">Size 39</td>
+                                        <td><input type="number" class="form-control text-end" name="price_39" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_39" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="40"/></td>
+                                        <td class="fw-bold text-dark">Size 40</td>
+                                        <td><input type="number" class="form-control text-end" name="price_40" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_40" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="41"/></td>
+                                        <td class="fw-bold text-dark">Size 41</td>
+                                        <td><input type="number" class="form-control text-end" name="price_41" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_41" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="42"/></td>
+                                        <td class="fw-bold text-dark">Size 42</td>
+                                        <td><input type="number" class="form-control text-end" name="price_42" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_42" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="43"/></td>
+                                        <td class="fw-bold text-dark">Size 43</td>
+                                        <td><input type="number" class="form-control text-end" name="price_43" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_43" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="44"/></td>
+                                        <td class="fw-bold text-dark">Size 44</td>
+                                        <td><input type="number" class="form-control text-end" name="price_44" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_44" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    <tr class="size-row-num">
+                                        <td class="text-center"><input type="checkbox"
+                                                                       class="form-check-input size-checkbox"
+                                                                       name="selectedSizes" value="45"/></td>
+                                        <td class="fw-bold text-dark">Size 45</td>
+                                        <td><input type="number" class="form-control text-end" name="price_45" min="0"
+                                                   value="0"/></td>
+                                        <td><input type="number" class="form-control text-center" name="qty_45" min="0"
+                                                   value="0"/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12 d-flex justify-content-end gap-2">
+                            <button type="reset" class="btn btn-light px-4">Nhập lại</button>
+                            <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save me-1"></i> Lưu sản
+                                phẩm
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const ddlCategory = document.getElementById('ddlCategory');
+            const textRows = document.querySelectorAll('.size-row-text');
+            const numRows = document.querySelectorAll('.size-row-num');
+
+            function updateSizeDisplay() {
+                const category = ddlCategory.value;
+
+                // Hàm dọn dẹp dữ liệu rác của nhóm kích cỡ bị ẩn đi
+                const resetRow = (row) => {
+                    const checkbox = row.querySelector('.size-checkbox');
+                    if (checkbox) checkbox.checked = false;
+                    row.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+                };
+
+                if (category === 'G') {
+                    // Nếu là Giày: Hiện 8 dòng size số (38-45), Ẩn 4 dòng size chữ (S-XL)
+                    numRows.forEach(r => r.style.display = 'table-row');
+                    textRows.forEach(r => {
+                        r.style.display = 'none';
+                        resetRow(r);
+                    });
+                } else {
+                    // Nếu là Áo hoặc Quần: Hiện 4 dòng size chữ (S-XL), Ẩn 8 dòng size số (38-45)
+                    textRows.forEach(r => r.style.display = 'table-row');
+                    numRows.forEach(r => {
+                        r.style.display = 'none';
+                        resetRow(r);
+                    });
+                }
+            }
+
+            if (ddlCategory) {
+                updateSizeDisplay();
+                ddlCategory.addEventListener('change', updateSizeDisplay);
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | Shop thời trang Smart Casual'"></title>
+
+    <link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/assets/vendors/fontawesome/css/all.min.css"/>
+    <link rel="stylesheet" href="/assets/vendors/swiftcart-icons/style.css"/>
+    <link rel="stylesheet" href="/assets/vendors/spacing/spacing.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+<body>
+<div th:replace="~{_Header :: header}"></div>
+
+<div layout:fragment="content"></div>
+
+<div th:replace="~{_Footer :: footer}"></div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div style="width: fit-content; max-width: 100%; white-space: nowrap;" id="cartToast"
+         class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    // Gửi yêu cầu làm mới số lượng mặt hàng hiện có trong giỏ hàng lên thanh Header
+    function refreshCartCount() {
+        $.ajax({
+            url: '/Home/GetCartCount',
+            type: 'GET',
+            cache: false,
+            success: function (data) {
+                $('.x-cart-count').text(data.count);
+            }
+        });
+    }
+
+    // Gửi yêu cầu làm mới số lượng đơn hàng hoạt động chưa hoàn tất lên thanh Header
+    function refreshOrderCount() {
+        $.ajax({
+            url: '/Home/GetOrderCount',
+            type: 'GET',
+            cache: false,
+            success: function (data) {
+                $('.x-order-count').text(data.count);
+            }
+        });
+    }
+
+    // Xử lý thiết lập hiệu ứng hover menu dropdown tài khoản và kích hoạt bộ đếm khi trang đã sẵn sàng
+    $(document).ready(function () {
+        const userDropdown = document.querySelector('.user-dropdown');
+        if (userDropdown) {
+            userDropdown.addEventListener('mouseenter', function () {
+                const dropdown = userDropdown.querySelector('.dropdown-menu');
+                if (dropdown) dropdown.classList.add('show');
+            });
+            userDropdown.addEventListener('mouseleave', function () {
+                const dropdown = userDropdown.querySelector('.dropdown-menu');
+                if (dropdown) dropdown.classList.remove('show');
+            });
+        }
+        refreshCartCount();
+        refreshOrderCount();
+    });
+
+    // Tự động kích hoạt làm mới số liệu khi người dùng chuyển hướng quay trở lại trang từ lịch sử trình duyệt
+    window.addEventListener('pageshow', function (event) {
+        refreshCartCount();
+        refreshOrderCount();
+    });
+</script>
+
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

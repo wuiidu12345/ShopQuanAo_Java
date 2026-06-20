@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/_LayoutAdmin}">
+<head>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4>Quản lý tài khoản khách hàng</h4>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover mb-0">
+                    <thead class="bg-light">
+                    <tr class="text-muted">
+                        <th class="ps-4">Mã KH</th>
+                        <th>Họ và Tên</th>
+                        <th>Email (Tên đăng nhập)</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cust : ${customers}">
+                        <td class="ps-4 fw-bold" th:text="${cust.MaKH}"></td>
+                        <td th:text="${cust.HoTen}"></td>
+                        <td th:text="${cust.TenDangNhap}"></td>
+                        <td th:text="${cust.SoDienThoai != null ? cust.SoDienThoai : '---'}"></td>
+                        <td>
+                            <small class="text-muted"
+                                   th:text="${cust.DiaChi != null ? cust.DiaChi : 'Chưa cập nhật'}"></small>
+                        </td>
+                        <td>
+                            <span th:if="${cust.TrangThai}"
+                                  class="badge bg-success-subtle text-success border border-success">Đang hoạt động</span>
+                            <span th:unless="${cust.TrangThai}"
+                                  class="badge bg-danger-subtle text-danger border border-danger">Đã bị khóa</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <form th:action="@{/admin/customers/toggle-status}" method="post" style="display:inline;">
+                                <input type="hidden" name="maKH" th:value="${cust.MaKH}">
+                                <input type="hidden" name="currentStatus" th:value="${cust.TrangThai ? 1 : 0}">
+
+                                <button th:if="${cust.TrangThai}" type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Bạn có chắc muốn KHÓA tài khoản này?')">
+                                    <i class="fas fa-lock me-1"></i> Khóa
+                                </button>
+
+                                <button th:unless="${cust.TrangThai}" type="submit" class="btn btn-sm btn-success"
+                                        onclick="return confirm('Bạn có chắc muốn MỞ KHÓA tài khoản này?')">
+                                    <i class="fas fa-unlock me-1"></i> Mở khóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${customers == null or customers.isEmpty()}">
+                        <td colspan="7" class="text-center py-5 text-muted">Chưa có khách hàng nào đăng ký.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

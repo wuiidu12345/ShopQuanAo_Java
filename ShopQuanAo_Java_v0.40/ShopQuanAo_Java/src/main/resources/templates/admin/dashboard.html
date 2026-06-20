@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/_LayoutAdmin}">
+<head>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <section id="products" class="mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <div>
+                <h4 class="mb-1">Danh sách sản phẩm</h4>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/dashboard/create}" class="btn btn-primary">+ Thêm sản phẩm mới</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="bg-light">
+                        <tr class="text-muted">
+                            <th style="width:100px;" class="ps-4">Hình</th>
+                            <th>Mã SP</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá bán</th>
+                            <th>Tổng tồn</th>
+                            <th class="text-end pe-4">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${products}">
+                            <td class="ps-4">
+                                <img th:src="'/' + ${item.anhDaiDien}" class="thumb" alt="product">
+                            </td>
+                            <td class="fw-bold text-secondary" th:text="${item.maSP}"></td>
+                            <td class="fw-semibold" th:text="${item.tenSanPham}"></td>
+                            <td>
+                                <span class="badge bg-info text-dark bg-opacity-10 border border-info"
+                                      th:text="${item.tenDanhMuc}"></span>
+                            </td>
+                            <td class="text-danger fw-bold"
+                                th:text="${item.giaBan != null} ? ${#numbers.formatDecimal(item.giaBan, 3, 'POINT', 0, 'POINT')} + 'đ' : '0đ'"></td>
+                            <td th:text="${item.tongTonKho}"></td>
+                            <td class="text-end pe-4">
+                                <a th:href="@{/admin/dashboard/edit/{id}(id=${item.maSP})}"
+                                   class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+
+                                <a th:href="@{/admin/dashboard/soft-delete/{id}(id=${item.maSP})}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   th:data-confirm="|Bạn có chắc chắn muốn xóa sản phẩm ${item.tenSanPham} không?|"
+                                   onclick="return confirm(this.getAttribute('data-confirm'))">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${products == null or products.isEmpty()}">
+                            <td colspan="7" class="text-center py-5 text-muted">Chưa có sản phẩm nào.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

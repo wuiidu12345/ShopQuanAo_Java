@@ -1,0 +1,60 @@
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <img src="/assets/img/resourse/logo.png" alt="logo" width="90" class="me-2">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold text-uppercase px-3" th:href="@{/}">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold text-uppercase px-3" th:href="@{/about}">Giới thiệu</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-3 ms-lg-3 mt-3 mt-lg-0">
+                <a th:href="@{/cart}" class="btn btn-outline-secondary position-relative" id="cartBtn" title="Giỏ hàng">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger x-cart-count"
+                          style="font-size:0.75em;">0</span>
+                </a>
+
+                <a th:href="@{/order}" class="btn btn-outline-secondary position-relative" id="orderBtn"
+                   title="Đơn hàng đã đặt">
+                    <i class="fas fa-truck"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger x-order-count"
+                          style="font-size:0.75em;">0</span>
+                </a>
+
+                <div class="dropdown user-dropdown">
+                    <a href="#" class="btn btn-outline-secondary dropdown-toggle" id="userDropdown"
+                       data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        <span th:if="${session.TenKhachHang != null}" class="ms-1 small fw-bold"
+                              th:text="${session.TenKhachHang}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <th:block th:if="${session.MaKH == null}">
+                            <li><a class="dropdown-item" th:href="@{/register}">Đăng ký</a></li>
+                            <li><a class="dropdown-item" th:href="@{/login}">Đăng nhập</a></li>
+                        </th:block>
+                        <th:block th:unless="${session.MaKH == null}">
+                            <li><a class="dropdown-item" href="#">Hồ sơ của tôi</a></li>
+                            <li><a class="dropdown-item" th:href="@{/order}">Đơn mua</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" th:href="@{/logout}">Đăng xuất</a></li>
+                        </th:block>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

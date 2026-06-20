@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_Layout}">
+<head>
+    <title th:text="${title}"></title>
+    <style>
+        /* Tùy chỉnh danh sách sản phẩm có thanh cuộn nếu quá dài */
+        .checkout-product-list {
+            max-height: 190px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Tùy chỉnh thanh cuộn cho thẩm mỹ */
+        .checkout-product-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .checkout-product-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .checkout-product-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="x-breadcrumb__area base-bg">
+        <div class="x-breadcrumb__bg w-img x-breadcrumb__overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-12">
+                    <div class="x-breadcrumb__content p-relative z-index-1">
+                        <div class="x-breadcrumb__list">
+                            <span><a th:href="@{/}">Trang chủ</a></span>
+                            <span class="dvdr"><i class="icon-arrow-right"></i></span>
+                            <span>Thanh toán</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="checkout-area pt-2 pb-40">
+        <div class="container">
+            <form id="checkout-form">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h3 class="mb-30">Thông tin giao hàng</h3>
+                        <div class="checkbox-form">
+                            <div class="row" style="color: #000">
+                                <div class="col-md-6">
+                                    <div class="checkout-form-list">
+                                        <label>Họ và tên <span class="required">*</span></label>
+                                        <input type="text" name="tenNguoiNhan" placeholder="Nhập họ tên người nhận"
+                                               required th:value="${userTen}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="checkout-form-list">
+                                        <label>Số điện thoại <span class="required">*</span></label>
+                                        <input type="tel" name="soDienThoai" placeholder="Nhập số điện thoại"
+                                               required th:value="${userSdt}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="checkout-form-list">
+                                        <label>Địa chỉ nhận hàng <span class="required">*</span></label>
+                                        <input type="text" name="diaChi"
+                                               placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+                                               required th:value="${userDiaChi}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="checkout-form-list">
+                                        <label>Ghi chú đơn hàng</label>
+                                        <textarea name="ghiChu"
+                                                  placeholder="Ví dụ: Giao hàng vào giờ hành chính, gọi trước khi giao..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="shop_cart_widget x-accordion">
+                            <div class="accordion" id="checkout_accordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="checkout_widget">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#checkout_widget_collapse" aria-expanded="true">
+                                            Chi tiết hóa đơn
+                                        </button>
+                                    </h2>
+                                    <div id="checkout_widget_collapse" class="accordion-collapse collapse show"
+                                         data-bs-parent="#checkout_accordion">
+                                        <div class="accordion-body">
+                                            <div class="cart-checkout"
+                                                 style="border: none !important; padding-bottom: 0 !important; margin-bottom: 0 !important">
+                                                <h4>Sản phẩm</h4>
+                                                <ul class="list-group list-group-flush checkout-product-list">
+                                                    <li th:each="item : ${selectedItems}"
+                                                        class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="ms-2">
+                                                                <h6 class="my-0 text-dark" style="font-size: 14px;"
+                                                                    th:text="${item.tenSanPham}"></h6>
+                                                                <small class="text-muted"
+                                                                       th:text="'Size: ' + ${item.tenKichThuoc} + ' | x ' + ${item.soLuong}"></small>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-muted fw-bold" style="font-size: 14px;"
+                                                              th:text="${#numbers.formatInteger(item.getThanhTien().intValue(), 3, 'POINT')} + 'đ'"></span>
+                                                    </li>
+                                                </ul>
+                                                <hr class="my-3" style="border-color: #888;">
+
+                                                <h4>Phương thức thanh toán</h4>
+                                                <div class="shop__widget-list mb-4">
+                                                    <div class="shop__widget-list-item-2">
+                                                        <input type="radio" name="phuongThucThanhToan" id="payment_cod"
+                                                               value="Thanh toán khi nhận hàng" checked>
+                                                        <label for="payment_cod">Thanh toán khi nhận hàng</label>
+                                                    </div>
+                                                    <div class="shop__widget-list-item-2">
+                                                        <input type="radio" name="phuongThucThanhToan"
+                                                               id="payment_transfer" value="Chuyển khoản">
+                                                        <label for="payment_transfer">Chuyển khoản</label>
+                                                    </div>
+                                                    <div class="shop__widget-list-item-2">
+                                                        <input type="radio" name="phuongThucThanhToan" id="payment_card"
+                                                               value="Thẻ tín dụng/ghi nợ">
+                                                        <label for="payment_card">Thẻ tín dụng/ghi nợ</label>
+                                                    </div>
+                                                </div>
+                                                <hr class="my-3" style="border-color: #888;">
+
+                                                <div class="cart-totails">
+                                                    <table style="width: 100%">
+                                                        <tr>
+                                                            <td>Tạm tính:</td>
+                                                            <td style="text-align: right; font-weight: bold; padding: 5px 0;"
+                                                                th:text="${#numbers.formatInteger(tamTinh.intValue(), 3, 'POINT')} + 'đ'"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Phí vận chuyển:</td>
+                                                            <td style="text-align: right; font-weight: bold; padding: 5px 0;"
+                                                                th:text="${#numbers.formatInteger(phiShip.intValue(), 3, 'POINT')} + 'đ'"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color: #198754;">Giảm giá:</td>
+                                                            <td style="text-align: right; font-weight: bold; color: #198754; padding: 5px 0;"
+                                                                th:text="'-' + ${#numbers.formatInteger(giamGia.intValue(), 3, 'POINT')} + 'đ'"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="vertical-align: middle;">
+                                                                <h5 style="margin: 0; font-weight: bold; font-size: 18px;">
+                                                                    Tổng cộng:</h5>
+                                                            </td>
+                                                            <td style="text-align: right; vertical-align: middle;">
+                                                                <span class="text-danger"
+                                                                      style="margin: 0; font-weight: bold; font-size: 18px;"
+                                                                      th:text="${#numbers.formatInteger(tongCong.intValue(), 3, 'POINT')} + 'đ'"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+                                                <button type="submit" class="cart-checkout-btn w-100 mt-3"
+                                                        id="btn-place-order">HOÀN TẤT ĐẶT HÀNG
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-body py-5">
+                    <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                    <h4 class="mb-2">Đặt hàng thành công!</h4>
+                    <p>Mã đơn hàng: <strong id="success-order-id" class="text-primary"></strong></p>
+                    <p>Cảm ơn bạn đã mua sắm tại Smart Casual.</p>
+                    <a th:href="@{/}" class="btn btn-success mt-3 px-4">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalQRTransfer" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <h5>Quét mã QR để thanh toán</h5>
+                <img th:src="@{/assets/img/resourse/MaQR.png}" alt="QR Code" class="my-3 mx-auto" style="width: 200px;">
+                <p>Ngân hàng: <b>Vietcombank</b></p>
+                <p>Số tài khoản: <b>123456789</b></p>
+                <p>Nội dung: <b id="qr-content">DH-ORDERID</b></p>
+                <button type="button" class="btn btn-primary w-100" id="btn-confirm-qr">Tôi đã thanh toán</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCreditCard" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <h5>Thanh toán thẻ tín dụng</h5>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Số thẻ (16 số)">
+                </div>
+                <div class="row">
+                    <div class="col-6"><input type="text" class="form-control" placeholder="MM/YY"></div>
+                    <div class="col-6"><input type="text" class="form-control" placeholder="CVV"></div>
+                </div>
+                <button type="button" class="btn btn-primary w-100 mt-3" id="btn-confirm-card">Xác nhận thanh toán
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            // Hàm hiển thị Toast thông báo lỗi (Màu đỏ) giống hệt dự án cũ
+            function showErrorToast(message) {
+                var toastEl = document.getElementById('cartToast');
+                if (toastEl) {
+                    $(toastEl).removeClass('text-bg-success').addClass('text-bg-danger');
+                    $(toastEl).find('.toast-body').text(message);
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                } else {
+                    alert(message);
+                }
+            }
+
+            $('#checkout-form').submit(function (e) {
+                e.preventDefault();
+
+                var paymentMethod = $('input[name="phuongThucThanhToan"]:checked').val();
+
+                // Nếu là COD, chạy submit ngay
+                if (paymentMethod === 'Thanh toán khi nhận hàng') {
+                    processOrder();
+                }
+                // Nếu là QR hoặc Thẻ, hiện Modal trước
+                else if (paymentMethod === 'Chuyển khoản') {
+                    $('#qr-content').text('DH-' + Date.now()); // Giả lập nội dung
+                    new bootstrap.Modal(document.getElementById('modalQRTransfer')).show();
+                } else {
+                    new bootstrap.Modal(document.getElementById('modalCreditCard')).show();
+                }
+            });
+
+            // Hàm xử lý đặt hàng chính (gọi sau khi đã xác nhận thanh toán giả)
+            function processOrder() {
+                var btn = $('#btn-place-order');
+                btn.prop('disabled', true).text('Đang xử lý...');
+
+                var formData = $('#checkout-form').serialize();
+
+                $.ajax({
+                    url: '/Home/PlaceOrder',
+                    type: 'POST',
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            // Đóng tất cả modal nếu có
+                            $('.modal').modal('hide');
+                            $('#success-order-id').text(res.maDonHang);
+                            new bootstrap.Modal(document.getElementById('orderSuccessModal')).show();
+                        } else {
+                            alert(res.message);
+                            $('#btn-place-order').prop('disabled', false).text('HOÀN TẤT ĐẶT HÀNG');
+                        }
+                    }
+                });
+            }
+
+            // Gán sự kiện xác nhận cho nút trong Modal
+            $('#btn-confirm-qr, #btn-confirm-card').click(function () {
+                processOrder();
+            });
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

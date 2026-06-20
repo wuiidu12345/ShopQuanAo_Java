@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/_LayoutAdmin}">
+<body>
+<div layout:fragment="content">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Chỉnh sửa sản phẩm: <span th:text="${product.maSP}" class="text-primary"></span>
+            </h4>
+            <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Quay
+                lại</a>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded">
+            <div class="card-body p-4">
+                <form th:action="@{/admin/dashboard/edit}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="maSP" th:value="${product.maSP}"/>
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Tên sản phẩm</label>
+                            <input type="text" class="form-control" name="tenSanPham" th:value="${product.tenSanPham}"
+                                   required/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Danh mục</label>
+                            <select class="form-select" name="maDanhMuc" id="ddlCategory" required>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.get('MaDanhMuc')}"
+                                        th:text="${cat.get('TenDanhMuc')}"
+                                        th:selected="${cat.get('MaDanhMuc') == product.maSP.substring(0,1)}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mô tả sản phẩm</label>
+                            <textarea class="form-control" name="moTa" rows="4" th:text="${product.moTa}"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Thay đổi ảnh (Bỏ trống nếu giữ ảnh cũ)</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <img th:src="'/' + ${product.anhDaiDien}" class="rounded border"
+                                     style="width: 80px; height: 80px; object-fit: cover;"/>
+                                <input type="file" class="form-control" name="imageFile" accept="image/*"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4"/>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label fw-bold mb-3"><i class="fas fa-boxes me-1"></i> Cấu hình kích thước
+                                và tồn kho</label>
+                            <div class="table-responsive border rounded bg-white">
+                                <table class="table align-middle mb-0" id="sizeTable">
+                                    <thead class="bg-light">
+                                    <tr class="small text-muted text-uppercase fw-bold">
+                                        <th style="width: 80px;" class="text-center">Chọn</th>
+                                        <th>Size</th>
+                                        <th>Giá bán (đ)</th>
+                                        <th>Số lượng</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="sizeName : ${ {'S', 'M', 'L', 'XL'} }" class="size-row-text">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input size-checkbox"
+                                                   name="selectedSizes" th:value="${sizeName}"
+                                                   th:checked="${variantMap.containsKey(sizeName)}"/>
+                                        </td>
+                                        <td class="fw-bold" th:text="'Size ' + ${sizeName}"></td>
+                                        <td><input type="number" class="form-control" th:name="'price_' + ${sizeName}"
+                                                   th:value="${variantMap.containsKey(sizeName) ? variantMap.get(sizeName).get('GiaBan') : 0}"/>
+                                        </td>
+                                        <td><input type="number" class="form-control" th:name="'qty_' + ${sizeName}"
+                                                   th:value="${variantMap.containsKey(sizeName) ? variantMap.get(sizeName).get('SoLuong') : 0}"/>
+                                        </td>
+                                    </tr>
+                                    <tr th:each="sizeName : ${ {'38', '39', '40', '41', '42', '43', '44', '45'} }"
+                                        class="size-row-num">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input size-checkbox"
+                                                   name="selectedSizes" th:value="${sizeName}"
+                                                   th:checked="${variantMap.containsKey(sizeName)}"/>
+                                        </td>
+                                        <td class="fw-bold" th:text="'Size ' + ${sizeName}"></td>
+                                        <td><input type="number" class="form-control" th:name="'price_' + ${sizeName}"
+                                                   th:value="${variantMap.containsKey(sizeName) ? variantMap.get(sizeName).get('GiaBan') : 0}"/>
+                                        </td>
+                                        <td><input type="number" class="form-control" th:name="'qty_' + ${sizeName}"
+                                                   th:value="${variantMap.containsKey(sizeName) ? variantMap.get(sizeName).get('SoLuong') : 0}"/>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-5"><i class="fas fa-save me-1"></i> Cập nhật
+                            thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const ddlCategory = document.getElementById('ddlCategory');
+            const textRows = document.querySelectorAll('.size-row-text');
+            const numRows = document.querySelectorAll('.size-row-num');
+
+            function updateSizeDisplay() {
+                const category = ddlCategory.value;
+                if (category === 'G') {
+                    numRows.forEach(r => r.style.display = 'table-row');
+                    textRows.forEach(r => r.style.display = 'none');
+                } else {
+                    textRows.forEach(r => r.style.display = 'table-row');
+                    numRows.forEach(r => r.style.display = 'none');
+                }
+            }
+
+            if (ddlCategory) {
+                updateSizeDisplay();
+                ddlCategory.addEventListener('change', updateSizeDisplay);
+            }
+        });
+    </script>
+</div>
+</body>
+</html>
