@@ -40,7 +40,7 @@ Trong thư mục ShopQuanAo_SQL_vX, bạn vui lòng chạy lần lượt các fi
 
 2. Kiểm tra cấu hình kết nối database trong file "src/main/resources/application.properties" đảm bảo trùng khớp với thông số ở Bước 1:
 
-- spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=Ten_Database_Cua_Ban;trustServerCertificate=true;
+- spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=ShopQuanAo;trustServerCertificate=true;
 - spring.datasource.username=sa
 - spring.datasource.password=123
 
